@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Sylpheed.UtilityAI.Considerations
 {
     [CreateAssetMenu(fileName = "Within Target Proximity", menuName = "Utility AI/Consideration/Within Target Proximity")]
-    public class WithinTargetProximityConsideration : BoolConsideration
+    public class InRangeConsideration : BoolConsideration
     {
         [Header("Within Target Proximity")] 
         [SerializeField] private float _distanceThreshold = 5f;
