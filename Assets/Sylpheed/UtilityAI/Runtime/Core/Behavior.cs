@@ -15,6 +15,7 @@ namespace Sylpheed.UtilityAI
         [SerializeReference, SubclassSelector] private Reasoner _reasoner;
         [SerializeField] private Consideration[] _considerations;
         [SerializeField] private float _weight = 1;
+        [SerializeField] private ConsiderationDecorator[] _considerationDecorators;
         
         [Header("Target")] 
         [Tooltip("When set, decisions will be evaluated per target based on this behavior.")]
@@ -23,7 +24,7 @@ namespace Sylpheed.UtilityAI
         [SerializeField] private Tag[] _requiredTargetTags = Array.Empty<Tag>();
         
         public Action Action => _action;
-        public IReadOnlyList<Consideration> Considerations { get; private set; }
+        public IReadOnlyList<IConsideration> Considerations { get; private set; }
         public float Weight => _weight;
         public bool RequiresTarget => _requiresTarget;
         public IReadOnlyCollection<Tag> RequiredTargetTags => _requiredTargetTags;
