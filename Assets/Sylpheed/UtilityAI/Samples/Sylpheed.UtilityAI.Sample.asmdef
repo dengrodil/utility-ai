@@ -1,0 +1,16 @@
+{
+    "name": "Sylpheed.UtilityAI.Samples",
+    "rootNamespace": "Sylpheed.UtilityAI.Sample",
+    "references": [
+        "Sylpheed.UtilityAI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

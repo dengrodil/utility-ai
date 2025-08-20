@@ -41,4 +41,4 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _min: 0
-  _max: 0.25
+  _max: 1

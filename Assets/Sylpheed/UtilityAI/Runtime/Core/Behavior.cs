@@ -13,9 +13,8 @@ namespace Sylpheed.UtilityAI
         
         [Header("Decision")]
         [SerializeReference, SubclassSelector] private Reasoner _reasoner;
-        [SerializeField] private Consideration[] _considerations;
+        [SerializeField] private ConsiderationDecorator[] _considerations;
         [SerializeField] private float _weight = 1;
-        [SerializeField] private ConsiderationDecorator[] _considerationDecorators;
         
         [Header("Target")] 
         [Tooltip("When set, decisions will be evaluated per target based on this behavior.")]
