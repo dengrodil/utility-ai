@@ -33,6 +33,6 @@ MonoBehaviour:
     - rid: 5832752417688780860
       type: {class: PatrolAction, ns: Sylpheed.UtilityAI.Sample, asm: Sylpheed.UtilityAI.Samples}
       data:
-        _minRadius: 30
-        _maxRadius: 50
+        _minRadius: 50
+        _maxRadius: 100
         _staminaCost: 1

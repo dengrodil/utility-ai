@@ -10,6 +10,7 @@ namespace Sylpheed.UtilityAI.Editor
         {
             var considerationProp = property.FindPropertyRelative("_consideration");
             var invertedProp = property.FindPropertyRelative("_inverted");
+            var muteProp = property.FindPropertyRelative("_mute");
 
             GUILayout.Space(-EditorGUIUtility.singleLineHeight);
             EditorGUILayout.BeginHorizontal();
@@ -27,8 +28,16 @@ namespace Sylpheed.UtilityAI.Editor
                 "Inverted", 
                 invertedProp.boolValue, 
                 GUILayout.ExpandWidth(false),
-                GUILayout.Width(EditorGUIUtility.labelWidth - 10f)
+                GUILayout.MaxWidth(80f)
                 );
+            
+            muteProp.boolValue = EditorGUILayout.ToggleLeft(
+                "Mute", 
+                muteProp.boolValue, 
+                GUILayout.ExpandWidth(false),
+                GUILayout.MaxWidth(50f)
+            );
+            
             EditorGUILayout.EndHorizontal();
             
             property.serializedObject.ApplyModifiedProperties();

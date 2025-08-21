@@ -19,10 +19,13 @@ MonoBehaviour:
   _considerations:
   - _consideration: {fileID: 11400000, guid: 0bb7211d582d01a45805842baff8a877, type: 2}
     _inverted: 1
+    _mute: 0
   - _consideration: {fileID: 11400000, guid: 4d825de84db657846ab330ceb7bb8996, type: 2}
     _inverted: 0
+    _mute: 0
   - _consideration: {fileID: 11400000, guid: afff57aebe904494a811c3ed2ae77fa1, type: 2}
     _inverted: 0
+    _mute: 0
   _weight: 1
   _requiresTarget: 1
   _requiredTargetTags:
