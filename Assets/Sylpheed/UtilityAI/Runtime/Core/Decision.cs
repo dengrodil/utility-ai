@@ -17,6 +17,12 @@ namespace Sylpheed.UtilityAI
         public T Data<T>() where T : class => _data as T;
         public bool TryGetData<T>(out T data) where T : class => (data = _data as T) != null;
         
+        /// <summary>
+        /// A Decision is concluded if the Action was completed or prematurely halted due to some conditions.
+        /// It will not be concluded if the UtilityAgent changed Decision while a Decision is still being enacted.
+        /// </summary>
+        public bool Concluded { get; private set; }
+        
         #region Builder
         public static Decision Create(UtilityAgent agent, Behavior behavior)
         {
@@ -47,12 +53,14 @@ namespace Sylpheed.UtilityAI
         /// Evaluates all considerations for this behavior against a specific target (if applicable)
         /// </summary>
         /// <param name="scoreThreshold">Stops evaluating remaining considerations if this decision can no longer score higher than the threshold.</param>
-        /// /// <param name="scoreCache">Cache of score based on a permutation of agent, target, consideration, and data. If cached, skip evaluation and use cache.</param>
+        /// <param name="agentBonus">Score bonus provided by the UtilityAgent (eg. same decision bonus)</param>
+        /// <param name="scoreCache">Cache of score based on a permutation of agent, target, consideration, and data. If cached, skip evaluation and use cache.</param>
         /// <returns>Score. Result is cached.</returns>
-        public float Evaluate(float scoreThreshold, IDictionary<int, float> scoreCache)
+        public float Evaluate(float scoreThreshold, float agentBonus, IDictionary<int, float> scoreCache)
         {
             // Evaluate each consideration
             var finalScore = 1f;
+            var bonus = Behavior.Weight * agentBonus;
             for (var i = 0; i < Behavior.Considerations.Count; i++)
             {
                 var consideration = Behavior.Considerations[i];
@@ -61,7 +69,7 @@ namespace Sylpheed.UtilityAI
                 if (Mathf.Approximately(finalScore, 0)) break;
                 
                 // Stop evaluating if this decision can no longer beat the score threshold
-                var projectedMaxScore = Mathf.Pow(finalScore, 1f / (i + 1)) * Behavior.Weight;
+                var projectedMaxScore = Mathf.Pow(finalScore, 1f / (i + 1)) * bonus;
                 if (projectedMaxScore < scoreThreshold) break;
                 
                 // Evaluate consideration score
@@ -72,8 +80,8 @@ namespace Sylpheed.UtilityAI
             // Apply compensation factor based on number of considerations
             if (finalScore > 0) finalScore = Mathf.Pow(finalScore, 1f / Behavior.Considerations.Count);
             
-            // Apply weight
-            finalScore *= Behavior.Weight;
+            // Apply bonus
+            finalScore *= bonus;
             
             Score = finalScore;
             return finalScore;
@@ -112,7 +120,11 @@ namespace Sylpheed.UtilityAI
             var json = JsonUtility.ToJson(Behavior.Action);
             if (JsonUtility.FromJson(json, Behavior.Action.GetType()) is not Action action) throw new System.Exception("Unable to create action");
 
-            action.Execute(this, onExit);
+            action.Execute(this, () =>
+            {
+                Concluded = true;
+                onExit?.Invoke();
+            });
             
             return action;
         }

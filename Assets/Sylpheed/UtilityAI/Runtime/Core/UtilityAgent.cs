@@ -11,6 +11,9 @@ namespace Sylpheed.UtilityAI
         [SerializeField] private float _targetSearchRadius = 100f;
         [SerializeField] private float _maxTargetsPerDecision = 12;
         [SerializeField] private float _decisionInterval = 1f;
+        [SerializeField] private bool _useWeightedScoreProbability = true;
+        [Tooltip("If a decision is still being enacted, modify the score of the current decision.")]
+        [SerializeField] private float _sameDecisionScoreBonus = 1.5f;
         
         [Header("Debug")]
         [SerializeField] private bool _logToConsole;
@@ -24,6 +27,8 @@ namespace Sylpheed.UtilityAI
         private float _decisionTimer;
         private readonly Dictionary<int, float> _scoreCache = new(); // Key is hash of agent, consideration, data, and target
         private Action _currentAction;
+        private Decision _previousDecision;
+        private List<DecisionResult> _decisionResults = new();
 
         private void Awake()
         {
@@ -78,6 +83,7 @@ namespace Sylpheed.UtilityAI
             
             // Enact decision
             Log($"enacted [{decision.Behavior.name}]. Score: {decision.Score:P2}");
+            _previousDecision = CurrentDecision;
             CurrentDecision = decision;
             _currentAction = decision.Enact(onExit: () =>
             {
@@ -122,8 +128,9 @@ namespace Sylpheed.UtilityAI
         {
             if (!decisions.Any()) return null;
             
-            // Clear score cache
+            // Clear
             _scoreCache.Clear();
+            _decisionResults.Clear();
             
             // Evaluate all decisions
             Decision bestDecision = null;
@@ -134,7 +141,8 @@ namespace Sylpheed.UtilityAI
                 if (decision.MaxScore < bestScore) continue;
                 
                 // Get score for this decision
-                var score = decision.Evaluate(bestScore, _scoreCache);
+                var bonus = EvaluateSimilarDecisionBonus(decision);
+                var score = decision.Evaluate(bestScore, bonus, _scoreCache);
                 
                 // Decision beats current best decision. Update best decision.
                 if (score > bestScore)
@@ -145,6 +153,14 @@ namespace Sylpheed.UtilityAI
             }
             
             return bestDecision;
+        }
+
+        private float EvaluateSimilarDecisionBonus(Decision decision)
+        {
+            if (!Decision.IsSimilar(CurrentDecision, decision)) return 1f;
+            if (CurrentDecision.Concluded) return 1f;
+            
+            return _sameDecisionScoreBonus;
         }
 
         private IReadOnlyList<Decision> BuildDecisions()

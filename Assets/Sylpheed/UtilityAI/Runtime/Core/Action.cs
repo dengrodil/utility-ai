@@ -64,7 +64,7 @@ namespace Sylpheed.UtilityAI
         {
             var shouldExit = ShouldExit();
             if (!shouldExit) OnUpdate(deltaTime);
-            else Exit();
+            else Conclude();
         }
         
         public void FixedUpdate(float deltaTime)
@@ -75,7 +75,7 @@ namespace Sylpheed.UtilityAI
         /// <summary>
         /// Call this whenever the action is concluded either successfully or prematurely. This will force the agent to come up with a new decision.
         /// </summary>
-        protected void Exit()
+        protected void Conclude()
         {
             OnExit();
             _onExit?.Invoke();
