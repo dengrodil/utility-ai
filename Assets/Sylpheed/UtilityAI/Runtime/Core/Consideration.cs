@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Sylpheed.UtilityAI
 {
-    public abstract class Consideration : ScriptableObject
+    public abstract class Consideration : ScriptableObject, IConsideration
     {
         [Header("Performance")]
         [Tooltip("Consideration with higher priority are evaluated first. Higher value means higher priority.")]
