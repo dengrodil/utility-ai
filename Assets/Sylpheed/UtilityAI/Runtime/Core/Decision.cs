@@ -18,6 +18,14 @@ namespace Sylpheed.UtilityAI
         public bool TryGetData<T>(out T data) where T : class => (data = _data as T) != null;
         
         /// <summary>
+        /// A Decision is scored if the Evaluate function was called regardless of its result.
+        /// </summary>
+        public bool Scored { get; private set; }
+        /// <summary>
+        /// A Decision is skipped if it cannot score higher than the threshold.
+        /// </summary>
+        public bool Skipped  { get; private set; }
+        /// <summary>
         /// A Decision is concluded if the Action was completed or prematurely halted due to some conditions.
         /// It will not be concluded if the UtilityAgent changed Decision while a Decision is still being enacted.
         /// </summary>
@@ -58,9 +66,12 @@ namespace Sylpheed.UtilityAI
         /// <returns>Score. Result is cached.</returns>
         public float Evaluate(float scoreThreshold, float agentBonus, IDictionary<int, float> scoreCache)
         {
+            Scored = true;
+            
             // Evaluate each consideration
             var finalScore = 1f;
             var bonus = Behavior.Weight * agentBonus;
+            Skipped = true;
             for (var i = 0; i < Behavior.Considerations.Count; i++)
             {
                 var consideration = Behavior.Considerations[i];
@@ -75,6 +86,9 @@ namespace Sylpheed.UtilityAI
                 // Evaluate consideration score
                 var score = EvaluateConsideration(consideration, scoreCache);
                 finalScore *= score;
+                
+                // Able to score above threshold
+                Skipped = false;
             }
             
             // Apply compensation factor based on number of considerations

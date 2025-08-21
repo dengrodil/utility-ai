@@ -13,13 +13,14 @@ namespace Sylpheed.UtilityAI
         [SerializeField] private float _decisionInterval = 1f;
         [SerializeField] private bool _useWeightedScoreProbability = true;
         [Tooltip("If a decision is still being enacted, modify the score of the current decision.")]
-        [SerializeField] private float _sameDecisionScoreBonus = 1.5f;
+        [SerializeField] private float _sameDecisionScoreBonus = 1.25f;
         
         [Header("Debug")]
         [SerializeField] private bool _logToConsole;
 
         public IReadOnlyList<UtilityTarget> Targets { get; private set; } = new List<UtilityTarget>();
         public Decision CurrentDecision { get; private set; }
+        public IReadOnlyCollection<DecisionResult> DecisionResults => _decisionResults;
         
         private List<BehaviorSet> _behaviorSets = new();
         private List<Behavior> _behaviors = new();
@@ -133,10 +134,18 @@ namespace Sylpheed.UtilityAI
             _decisionResults.Clear();
             
             // Evaluate all decisions
-            Decision bestDecision = null;
+            DecisionResult bestResult = null;
             var bestScore = 0f;
             foreach (var decision in decisions)
             {
+                // Cache result
+                var result = new DecisionResult
+                {
+                    Decision = decision,
+                    IsSameDecision = Decision.IsSimilar(CurrentDecision, decision),
+                };
+                _decisionResults.Add(result);
+                
                 // Ignore decision if it can no longer beat the current highest score
                 if (decision.MaxScore < bestScore) continue;
                 
@@ -147,12 +156,13 @@ namespace Sylpheed.UtilityAI
                 // Decision beats current best decision. Update best decision.
                 if (score > bestScore)
                 {
-                    bestDecision = decision;
+                    bestResult = result;
                     bestScore = score;
                 }
             }
-            
-            return bestDecision;
+
+            if (bestResult != null) bestResult.Best = true;
+            return bestResult?.Decision;
         }
 
         private float EvaluateSimilarDecisionBonus(Decision decision)

@@ -1733,6 +1733,8 @@ MonoBehaviour:
   _targetSearchRadius: 100
   _maxTargetsPerDecision: 12
   _decisionInterval: 1
+  _useWeightedScoreProbability: 1
+  _sameDecisionScoreBonus: 1.5
   _logToConsole: 0
 --- !u!4 &651311397
 Transform:
@@ -2259,6 +2261,8 @@ MonoBehaviour:
   _targetSearchRadius: 100
   _maxTargetsPerDecision: 12
   _decisionInterval: 1
+  _useWeightedScoreProbability: 1
+  _sameDecisionScoreBonus: 1.25
   _logToConsole: 1
 --- !u!4 &1295679420
 Transform:
@@ -2385,6 +2389,8 @@ MonoBehaviour:
   _targetSearchRadius: 100
   _maxTargetsPerDecision: 12
   _decisionInterval: 1
+  _useWeightedScoreProbability: 1
+  _sameDecisionScoreBonus: 1.5
   _logToConsole: 0
 --- !u!4 &1332651667
 Transform:
