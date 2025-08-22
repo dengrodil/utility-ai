@@ -12,7 +12,7 @@ namespace Sylpheed.UtilityAI
         [Tooltip("Consideration will not be scored. Resulting to a score of 1. Make sure that there's at least 1 Consideration in the Behavior that isn't muted.")]
         [SerializeField] private bool _mute;
 
-        public string Name => _consideration.Name;
+        public string Name => $"{(_inverted ? "Not " : "")}{_consideration.Name}";
         public int Priority => _consideration.Priority;
         public bool ShouldCacheScore => _consideration.ShouldCacheScore;
         public bool RequiresTarget => _consideration.RequiresTarget;
