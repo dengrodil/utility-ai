@@ -91,6 +91,17 @@ namespace Sylpheed.UtilityAI.Editor
         {
             var text = $"[{_agent.GetCachedConsiderationScore(decision, consideration) * 100:N0}] {consideration.Name}";
             EditorGUILayout.LabelField(text);
+
+            // Draw child recursively
+            if (consideration.Children != null)
+            {
+                EditorGUI.indentLevel++;
+                foreach (var child in consideration.Children)
+                {
+                    DrawConsideration(child, decision);
+                }
+                EditorGUI.indentLevel--;
+            }
         }
     }
 }
