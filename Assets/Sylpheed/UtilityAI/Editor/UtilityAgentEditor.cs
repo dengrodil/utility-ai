@@ -49,10 +49,9 @@ namespace Sylpheed.UtilityAI.Editor
                     }
                     else GUI.color = LabelColors.Unscored;
 
-                    var text = $"[{result.Decision.Behavior.name}]";
-                    if (result.Decision.Target) text += $"\tTarget: {result.Decision.Target.name}";
-                    if (result.Decision.Data != null) text += $"\tData: {result.Decision.Data}";
-                    text += $"\t=> {result.Decision.Score * 100:N0}";
+                    var text = $"[{result.Decision.Score * 100:N0}] {result.Decision.Behavior.name}\t";
+                    if (result.Decision.Target) text += $" Target: {result.Decision.Target.name}";
+                    if (result.Decision.Data != null) text += $" Data: {result.Decision.Data}";
                     EditorGUILayout.LabelField(text, EditorStyles.boldLabel);
                     
                     GUI.color = defaultLabelColor;
@@ -80,7 +79,7 @@ namespace Sylpheed.UtilityAI.Editor
 
         private void DrawConsideration(IConsideration consideration, Decision decision)
         {
-            var text = $"[{consideration.Name}]\t=> {decision.ConsiderationScores[consideration] * 100:N0}";
+            var text = $"[{decision.ConsiderationScores[consideration] * 100:N0}] {consideration.Name}";
             EditorGUILayout.LabelField(text);
         }
     }
