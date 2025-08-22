@@ -4,6 +4,7 @@ namespace Sylpheed.UtilityAI
 {
     public interface IConsideration
     {
+        string Name { get; }
         int Priority { get; }
         bool ShouldCacheScore { get; }
         bool RequiresTarget { get; }

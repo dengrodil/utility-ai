@@ -38,17 +38,6 @@ namespace Sylpheed.UtilityAI.Editor
                     .ThenBy(d => d.Skipped)
                     .ThenByDescending(d => d.Score)
                     .ToList();
-                var bestResult = agent.DecisionResults.SingleOrDefault(d => d.Best);
-            
-                // if (bestResult != null)
-                // {
-                //     GUI.color = LabelColors.Best;
-                //     EditorGUILayout.LabelField($"Current Decision: {bestResult.Decision.Behavior.name}", EditorStyles.boldLabel);
-                //     if (bestResult.Decision.Target) EditorGUILayout.LabelField($"Target: {bestResult.Decision.Behavior.name}", EditorStyles.boldLabel);
-                // }
-            
-                // EditorGUILayout.Space();
-                // EditorGUILayout.LabelField("Actions/Considerations", EditorStyles.boldLabel);
 
                 foreach (var result in results)
                 {
@@ -63,21 +52,13 @@ namespace Sylpheed.UtilityAI.Editor
                     var text = $"[{result.Decision.Behavior.name}]";
                     if (result.Decision.Target) text += $"\tTarget: {result.Decision.Target.name}";
                     if (result.Decision.Data != null) text += $"\tData: {result.Decision.Data}";
-                    text += $"\tScore: {result.Decision.Score * 100:N0}";
+                    text += $"\t=> {result.Decision.Score * 100:N0}";
                     EditorGUILayout.LabelField(text, EditorStyles.boldLabel);
                     
                     GUI.color = defaultLabelColor;
+                    
+                    DrawConsiderations(result.Decision);
                 }
-            
-            
-                // foreach (AIAction action in agent.actions)
-                // {
-                //     float utility = action.CalculateUtility(agent.context);
-                //     EditorGUILayout.LabelField($"Action: {action.name}, Utility: {utility:F2}");
-                //
-                //     // Draw the single consideration for the action
-                //     DrawConsideration(action.consideration, agent.context, 1);
-                // }
             }
             else
             {
@@ -85,46 +66,22 @@ namespace Sylpheed.UtilityAI.Editor
             }
         }
 
-        // private void DrawConsideration(Consideration consideration, Context context, int indentLevel)
-        // {
-        //     EditorGUI.indentLevel = indentLevel;
-        //
-        //     if (consideration is CompositeConsideration compositeConsideration)
-        //     {
-        //         EditorGUILayout.LabelField(
-        //             $"Composite Consideration: {compositeConsideration.name}, Operation: {compositeConsideration.operation}"
-        //         );
-        //
-        //         foreach (Consideration subConsideration in compositeConsideration.considerations)
-        //         {
-        //             DrawConsideration(subConsideration, context, indentLevel + 1);
-        //         }
-        //     }
-        //     else
-        //     {
-        //         float value = consideration.Evaluate(context);
-        //         EditorGUILayout.LabelField($"Consideration: {consideration.name}, Value: {value:F2}");
-        //     }
-        //
-        //     EditorGUI.indentLevel = indentLevel - 1; // Reset indentation after drawing
-        // }
-        //
-        // private AIAction GetChosenAction(Brain brain)
-        // {
-        //     float highestUtility = float.MinValue;
-        //     AIAction chosenAction = null;
-        //
-        //     foreach (var action in brain.actions)
-        //     {
-        //         float utility = action.CalculateUtility(brain.context);
-        //         if (utility > highestUtility)
-        //         {
-        //             highestUtility = utility;
-        //             chosenAction = action;
-        //         }
-        //     }
-        //
-        //     return chosenAction;
-        // }
+        private void DrawConsiderations(Decision decision)
+        {
+            EditorGUI.indentLevel++;
+
+            foreach (var consideration in decision.Behavior.Considerations)
+            {
+                DrawConsideration(consideration);
+            }
+
+            EditorGUI.indentLevel--;
+        }
+
+        private void DrawConsideration(IConsideration consideration)
+        {
+            var text = $"[{consideration.Name}]\t=> {999}";
+            EditorGUILayout.LabelField(text);
+        }
     }
 }
