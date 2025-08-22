@@ -17,6 +17,7 @@ namespace Sylpheed.UtilityAI
         public bool ShouldCacheScore => _consideration.ShouldCacheScore;
         public bool RequiresTarget => _consideration.RequiresTarget;
         public IReadOnlyCollection<Tag> RequiredTargetTags => _consideration.RequiredTargetTags;
+        public IEnumerable<IConsideration> Children => _consideration.Children;
 
         public float Evaluate(Decision decision)
         {

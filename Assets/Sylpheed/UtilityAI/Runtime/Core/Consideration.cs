@@ -23,7 +23,8 @@ namespace Sylpheed.UtilityAI
         public virtual bool ShouldCacheScore => _shouldCacheScore;
         public bool RequiresTarget => _requiresTarget;
         public IReadOnlyCollection<Tag> RequiredTargetTags => _requiredTargetTags;
-        
+        public virtual IEnumerable<IConsideration> Children => null;
+
         #region Overridables
         protected abstract float OnEvaluate(Decision decision);
         #endregion

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Sylpheed.UtilityAI
@@ -31,6 +32,9 @@ namespace Sylpheed.UtilityAI
         /// It will not be concluded if the UtilityAgent changed Decision while a Decision is still being enacted.
         /// </summary>
         public bool Concluded { get; private set; }
+
+        private Dictionary<IConsideration, float> _considerationScores;
+        public IReadOnlyDictionary<IConsideration, float> ConsiderationScores => _considerationScores;
         
         #region Builder
         public static Decision Create(UtilityAgent agent, Behavior behavior)
@@ -39,6 +43,7 @@ namespace Sylpheed.UtilityAI
             {
                 Agent = agent,
                 Behavior = behavior,
+                _considerationScores = behavior.Considerations.ToDictionary(consideration => consideration, _ => 0f)
             };
    
             return decision;
@@ -75,7 +80,7 @@ namespace Sylpheed.UtilityAI
             for (var i = 0; i < Behavior.Considerations.Count; i++)
             {
                 var consideration = Behavior.Considerations[i];
-                
+
                 // Stop evaluating if this decision is already vetoed by a consideration that scored 0.
                 if (Mathf.Approximately(finalScore, 0))
                 {
@@ -94,6 +99,7 @@ namespace Sylpheed.UtilityAI
                 // Evaluate consideration score
                 var score = EvaluateConsideration(consideration, scoreCache);
                 finalScore *= score;
+                _considerationScores[consideration] = score;
             }
             
             // Apply compensation factor based on number of considerations

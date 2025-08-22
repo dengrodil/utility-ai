@@ -72,15 +72,15 @@ namespace Sylpheed.UtilityAI.Editor
 
             foreach (var consideration in decision.Behavior.Considerations)
             {
-                DrawConsideration(consideration);
+                DrawConsideration(consideration, decision);
             }
 
             EditorGUI.indentLevel--;
         }
 
-        private void DrawConsideration(IConsideration consideration)
+        private void DrawConsideration(IConsideration consideration, Decision decision)
         {
-            var text = $"[{consideration.Name}]\t=> {999}";
+            var text = $"[{consideration.Name}]\t=> {decision.ConsiderationScores[consideration] * 100:N0}";
             EditorGUILayout.LabelField(text);
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Sylpheed.UtilityAI.Considerations
@@ -11,6 +12,8 @@ namespace Sylpheed.UtilityAI.Considerations
 
         public override bool ShouldCacheScore 
             => base.ShouldCacheScore && _considerations.All(consideration => consideration.ShouldCacheScore);
+
+        public sealed override IEnumerable<IConsideration> Children => _considerations;
 
         protected override float OnEvaluate(Decision decision)
         {

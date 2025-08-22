@@ -9,6 +9,7 @@ namespace Sylpheed.UtilityAI
         bool ShouldCacheScore { get; }
         bool RequiresTarget { get; }
         IReadOnlyCollection<Tag> RequiredTargetTags { get; }
+        IEnumerable<IConsideration> Children { get; }
 
         float Evaluate(Decision decision);
     }
