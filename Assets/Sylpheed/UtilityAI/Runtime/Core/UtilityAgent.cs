@@ -21,6 +21,7 @@ namespace Sylpheed.UtilityAI
         public IReadOnlyList<UtilityTarget> Targets { get; private set; } = new List<UtilityTarget>();
         public Decision CurrentDecision { get; private set; }
         public IReadOnlyCollection<DecisionResult> DecisionResults => _decisionResults;
+        public float SameDecisionScoreBonus => _sameDecisionScoreBonus;
         
         private List<BehaviorSet> _behaviorSets = new();
         private List<Behavior> _behaviors = new();
@@ -170,6 +171,13 @@ namespace Sylpheed.UtilityAI
             if (CurrentDecision.Concluded) return 1f;
             
             return _sameDecisionScoreBonus;
+        }
+
+        public float GetCachedConsiderationScore(Decision decision, IConsideration consideration)
+        {
+            var hash = decision.BuildConsiderationHash(consideration);
+            _scoreCache.TryGetValue(hash, out var score);
+            return score;
         }
 
         private IReadOnlyList<Decision> BuildDecisions()

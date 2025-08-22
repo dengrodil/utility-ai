@@ -32,10 +32,8 @@ namespace Sylpheed.UtilityAI
         /// It will not be concluded if the UtilityAgent changed Decision while a Decision is still being enacted.
         /// </summary>
         public bool Concluded { get; private set; }
-
-        private Dictionary<IConsideration, float> _considerationScores;
-        public IReadOnlyDictionary<IConsideration, float> ConsiderationScores => _considerationScores;
         
+        // TODO: Move to a different builder class
         #region Builder
         public static Decision Create(UtilityAgent agent, Behavior behavior)
         {
@@ -43,7 +41,6 @@ namespace Sylpheed.UtilityAI
             {
                 Agent = agent,
                 Behavior = behavior,
-                _considerationScores = behavior.Considerations.ToDictionary(consideration => consideration, _ => 0f)
             };
    
             return decision;
@@ -99,7 +96,6 @@ namespace Sylpheed.UtilityAI
                 // Evaluate consideration score
                 var score = EvaluateConsideration(consideration, scoreCache);
                 finalScore *= score;
-                _considerationScores[consideration] = score;
             }
             
             // Apply compensation factor based on number of considerations
@@ -127,7 +123,7 @@ namespace Sylpheed.UtilityAI
             return score;
         }
 
-        private int BuildConsiderationHash(IConsideration consideration)
+        public int BuildConsiderationHash(IConsideration consideration)
         {
             var hash = 17;
             hash = hash * 23 + (Agent?.GetHashCode() ?? 0);

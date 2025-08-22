@@ -16,23 +16,25 @@ namespace Sylpheed.UtilityAI.Editor
             public static readonly Color Unscored = Color.gray;
         }
         
+        private UtilityAgent _agent;
+        
         private void OnEnable()
         {
+            _agent = (UtilityAgent)target;
             RequiresConstantRepaint();
         }
 
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI(); // Draw the default inspector
-
-            var agent = (UtilityAgent)target;
+            
             var defaultLabelColor = GUI.color;
             
             EditorGUILayout.Space();
             if (Application.isPlaying)
             {
                 // Sort results
-                var results = agent.DecisionResults
+                var results = _agent.DecisionResults
                     .OrderByDescending(d => d.Best)
                     .ThenByDescending(d => d.Scored)
                     .ThenBy(d => d.Skipped)
@@ -55,6 +57,14 @@ namespace Sylpheed.UtilityAI.Editor
                     EditorGUILayout.LabelField(text, EditorStyles.boldLabel);
                     
                     GUI.color = defaultLabelColor;
+                    
+                    // Same decision
+                    if (result.IsSameDecision && !Mathf.Approximately(_agent.SameDecisionScoreBonus, 1f))
+                    {
+                        EditorGUI.indentLevel++;
+                        EditorGUILayout.LabelField($"[{_agent.SameDecisionScoreBonus * 100:N0}] Same Decision Bonus");
+                        EditorGUI.indentLevel--;
+                    }
                     
                     DrawConsiderations(result.Decision);
                 }
@@ -79,7 +89,7 @@ namespace Sylpheed.UtilityAI.Editor
 
         private void DrawConsideration(IConsideration consideration, Decision decision)
         {
-            var text = $"[{decision.ConsiderationScores[consideration] * 100:N0}] {consideration.Name}";
+            var text = $"[{_agent.GetCachedConsiderationScore(decision, consideration) * 100:N0}] {consideration.Name}";
             EditorGUILayout.LabelField(text);
         }
     }
