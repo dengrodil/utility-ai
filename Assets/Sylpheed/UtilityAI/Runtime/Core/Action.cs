@@ -7,8 +7,8 @@ namespace Sylpheed.UtilityAI
         public Decision Decision { get; private set; }
         public UtilityAgent Agent => Decision.Agent;
         public UtilityTarget Target => Decision.Target;
-        public T Data<T>() where T : class => Decision.Data<T>();
-        public bool TryGetData<T>(out T data) where T : class => (data = Decision.Data<T>()) != null;
+        public T GetData<T>() where T : class => Decision.GetData<T>();
+        public bool TryGetData<T>(out T data) where T : class => (data = Decision.GetData<T>()) != null;
 
         #region Overridables
 

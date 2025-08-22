@@ -14,7 +14,8 @@ namespace Sylpheed.UtilityAI
         public float MaxScore => Behavior.Weight;
         
         private object _data;
-        public T Data<T>() where T : class => _data as T;
+        public object Data => _data;
+        public T GetData<T>() where T : class => _data as T;
         public bool TryGetData<T>(out T data) where T : class => (data = _data as T) != null;
         
         /// <summary>

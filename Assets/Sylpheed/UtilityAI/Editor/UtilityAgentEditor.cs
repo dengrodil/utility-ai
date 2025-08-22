@@ -60,7 +60,11 @@ namespace Sylpheed.UtilityAI.Editor
                     }
                     else GUI.color = LabelColors.Unscored;
 
-                    EditorGUILayout.LabelField($"{result.Decision.Behavior.name}, Score: {result.Decision.Score:P0}", EditorStyles.boldLabel);
+                    var text = $"[{result.Decision.Behavior.name}]";
+                    if (result.Decision.Target) text += $"\tTarget: {result.Decision.Target.name}";
+                    if (result.Decision.Data != null) text += $"\tData: {result.Decision.Data}";
+                    text += $"\tScore: {result.Decision.Score * 100:N0}";
+                    EditorGUILayout.LabelField(text, EditorStyles.boldLabel);
                     
                     GUI.color = defaultLabelColor;
                 }
