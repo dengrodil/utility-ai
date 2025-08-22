@@ -192,6 +192,7 @@ namespace Sylpheed.UtilityAI
             var targets = _searchHits
                 .Take(size)
                 .Select(hit => hit.collider.GetComponentInParent<UtilityTarget>())
+                .Distinct()
                 .Where(target => target && target.enabled)
                 .OrderBy(target => target.DistanceFromAgent(this))
                 .ToList();
