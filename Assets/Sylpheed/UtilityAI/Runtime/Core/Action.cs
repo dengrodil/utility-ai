@@ -37,16 +37,16 @@ namespace Sylpheed.UtilityAI
         protected virtual bool ShouldExit() { return false; }
         #endregion
 
-        private System.Action _onExit;
+        private System.Action _onConcluded;
         private bool _executed;
         
-        public void Execute(Decision decision, System.Action onExit = null)
+        public void Execute(Decision decision, System.Action onConcluded = null)
         {
             if (_executed) throw new System.Exception("Action is already executed");
             _executed = true;
             
             Decision = decision;
-            _onExit = onExit;
+            _onConcluded = onConcluded;
             
             // Exit immediately if OnEnter failed
             if (!OnEnter())
@@ -78,7 +78,7 @@ namespace Sylpheed.UtilityAI
         protected void Conclude()
         {
             OnExit();
-            _onExit?.Invoke();
+            _onConcluded?.Invoke();
         }
     }
 }

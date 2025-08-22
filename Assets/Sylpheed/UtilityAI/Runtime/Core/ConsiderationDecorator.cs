@@ -23,5 +23,10 @@ namespace Sylpheed.UtilityAI
             var score = _consideration.Evaluate(decision);
             return _inverted ? 1f - score : score;
         }
+
+        public override string ToString()
+        {
+            return _consideration?.ToString();
+        }
     }
 }

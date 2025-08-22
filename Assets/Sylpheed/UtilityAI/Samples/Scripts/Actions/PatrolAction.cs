@@ -37,6 +37,7 @@ namespace Sylpheed.UtilityAI.Sample
 
         protected override bool ShouldExit()
         {
+            if (_navAgent.pathPending) return false;
             return _navAgent.remainingDistance <= _navAgent.stoppingDistance + 0.01f;
         }
 

@@ -71,24 +71,28 @@ namespace Sylpheed.UtilityAI
             // Evaluate each consideration
             var finalScore = 1f;
             var bonus = Behavior.Weight * agentBonus;
-            Skipped = true;
             for (var i = 0; i < Behavior.Considerations.Count; i++)
             {
                 var consideration = Behavior.Considerations[i];
                 
                 // Stop evaluating if this decision is already vetoed by a consideration that scored 0.
-                if (Mathf.Approximately(finalScore, 0)) break;
+                if (Mathf.Approximately(finalScore, 0))
+                {
+                    Skipped = true;
+                    break;
+                }
                 
                 // Stop evaluating if this decision can no longer beat the score threshold
                 var projectedMaxScore = Mathf.Pow(finalScore, 1f / (i + 1)) * bonus;
-                if (projectedMaxScore < scoreThreshold) break;
+                if (projectedMaxScore < scoreThreshold)
+                {
+                    Skipped = true;
+                    break;
+                }
                 
                 // Evaluate consideration score
                 var score = EvaluateConsideration(consideration, scoreCache);
                 finalScore *= score;
-                
-                // Able to score above threshold
-                Skipped = false;
             }
             
             // Apply compensation factor based on number of considerations
@@ -126,7 +130,7 @@ namespace Sylpheed.UtilityAI
             return hash;
         }
 
-        public Action Enact(System.Action onExit = null)
+        public Action Enact(System.Action onConcluded = null)
         {
             if (Behavior.Action == null) return null;
             
@@ -137,7 +141,7 @@ namespace Sylpheed.UtilityAI
             action.Execute(this, () =>
             {
                 Concluded = true;
-                onExit?.Invoke();
+                onConcluded?.Invoke();
             });
             
             return action;

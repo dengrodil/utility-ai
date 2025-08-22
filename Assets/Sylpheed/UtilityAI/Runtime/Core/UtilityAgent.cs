@@ -53,7 +53,6 @@ namespace Sylpheed.UtilityAI
             if (_decisionTimer >= _decisionInterval)
             {
                 Think();
-                _decisionTimer = 0;
             }
             else
             {
@@ -63,6 +62,7 @@ namespace Sylpheed.UtilityAI
 
         private void Think()
         {
+            _decisionTimer = 0;
             var decisions = BuildDecisions();
             var decision = Decide(decisions);
             EnactDecision(decision);
@@ -86,9 +86,8 @@ namespace Sylpheed.UtilityAI
             Log($"enacted [{decision.Behavior.name}]. Score: {decision.Score:P2}");
             _previousDecision = CurrentDecision;
             CurrentDecision = decision;
-            _currentAction = decision.Enact(onExit: () =>
+            _currentAction = decision.Enact(onConcluded: () =>
             {
-                // TODO: May cause infinite loop when decision always exits
                 // Come up with a new decision once current action has concluded
                 CurrentDecision = null;
                 Think();
